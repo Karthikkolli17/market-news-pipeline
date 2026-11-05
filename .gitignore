@@ -8,7 +8,7 @@ warehouse/*.duckdb
 warehouse/*.duckdb.wal
 transform/target/
 transform/dbt_packages/
-transform/logs/
+logs/
 .DS_Store
 .vscode/
 .idea/
