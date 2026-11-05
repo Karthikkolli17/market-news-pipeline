@@ -1,0 +1,7 @@
+transform:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ../warehouse/news.duckdb
+      threads: 4

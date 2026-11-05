@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw tables loaded by src/load_raw.py. Untouched API output."
+    schema: main
+    tables:
+      - name: raw_news
+        description: "One row per (article_id, ticker) from the Finnhub company-news API."
+        config:
+          loaded_at_field: loaded_at
+          freshness:
+            warn_after: {count: 30, period: hour}
+            error_after: {count: 54, period: hour}

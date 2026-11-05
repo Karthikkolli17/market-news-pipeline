@@ -1,0 +1,57 @@
+version: 2
+
+models:
+  - name: stg_news
+    description: "One row per news article, deduplicated across tickers. Latest version kept when copies differ."
+    columns:
+      - name: article_id
+        description: "Finnhub article ID. Primary key."
+        data_tests:
+          - unique
+          - not_null
+      - name: published_at_utc
+        description: "Publish time in UTC, from the epoch seconds in raw_news."
+        data_tests:
+          - not_null
+      - name: published_date_utc
+        description: "Publish date in UTC. Use this, not the raw folder date."
+        data_tests:
+          - not_null
+      - name: headline
+        description: "Article headline, trimmed."
+        data_tests:
+          - not_null
+      - name: summary
+        description: "Article summary, trimmed. NULL when the API returned an empty string."
+      - name: source
+        description: "News outlet name as reported by Finnhub (e.g. Yahoo)."
+      - name: url
+        description: "Finnhub redirect link to the article."
+        data_tests:
+          - not_null
+      - name: loaded_at
+        description: "When the row was loaded into raw_news."
+
+  - name: stg_news_tickers
+    description: "Bridge: one row per (article, ticker) pair the article was fetched for."
+    columns:
+      - name: article_ticker_id
+        description: "Surrogate key: article_id-ticker."
+        data_tests:
+          - unique
+          - not_null
+      - name: article_id
+        description: "Foreign key to stg_news."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_news')
+                field: article_id
+      - name: ticker
+        description: "Ticker whose news feed returned this article."
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['AAPL', 'MSFT', 'NVDA', 'TSLA', 'JPM']
